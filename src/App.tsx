@@ -204,7 +204,6 @@ export default function App() {
                     <div className="flex-1 min-h-[350px] lg:min-h-0 lg:sticky lg:top-16 lg:self-start lg:h-[calc(100vh-90px)]">
                         {mapsLoaded ? (
                             <MapView
-                                lang={lang}
                                 startLocation={startLocation}
                                 endLocation={endLocation}
                                 stops={stops}
