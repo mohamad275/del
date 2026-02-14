@@ -13,7 +13,6 @@ interface SavedRoutesProps {
 }
 
 const STORAGE_KEY = 'routeflow_saved_routes';
-
 function getSavedRoutes(): SavedRoute[] {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
 }
@@ -26,10 +25,7 @@ export default function SavedRoutes({ lang, currentStart, currentEnd, currentSto
 
     const saveRoute = () => {
         if (!routeName.trim() || currentStops.length === 0) return;
-        const newRoute: SavedRoute = {
-            id: generateId(), name: routeName.trim(), timestamp: Date.now(),
-            startLocation: currentStart, endLocation: currentEnd, stops: currentStops,
-        };
+        const newRoute: SavedRoute = { id: generateId(), name: routeName.trim(), timestamp: Date.now(), startLocation: currentStart, endLocation: currentEnd, stops: currentStops };
         const updated = [newRoute, ...routes].slice(0, 20);
         setRoutes(updated);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
@@ -45,38 +41,22 @@ export default function SavedRoutes({ lang, currentStart, currentEnd, currentSto
     if (!isVisible) return null;
 
     return (
-        <div className="animate-fadeInUp glass-card rounded-2xl overflow-hidden">
-            <div className="px-4 py-2.5 border-b border-surface-200/50 dark:border-surface-700/50">
-                <h3 className="text-sm font-semibold text-surface-700 dark:text-surface-300 flex items-center gap-2">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
-                    {t('saved.title', lang)}
-                </h3>
+        <div className="animate-fadeIn card overflow-hidden">
+            <div className="px-4 py-3 border-b border-surface-200 dark:border-surface-700 flex items-center gap-2">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-primary-500"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>
+                <h3 className="text-sm font-semibold text-surface-700 dark:text-surface-300">{t('saved.title', lang)}</h3>
             </div>
 
-            {/* Save current */}
+            {/* Save */}
             <div className="p-3 border-b border-surface-100 dark:border-surface-700/50">
                 <div className="flex gap-2">
-                    <input
-                        type="text"
-                        value={routeName}
-                        onChange={(e) => setRouteName(e.target.value)}
-                        placeholder={t('saved.namePlaceholder', lang)}
-                        className="flex-1 px-3 py-2 rounded-lg bg-white dark:bg-surface-800 border border-surface-200 dark:border-surface-700 text-sm text-surface-900 dark:text-surface-100 focus:outline-none focus:ring-2 focus:ring-primary-500/40"
-                        onKeyDown={(e) => e.key === 'Enter' && saveRoute()}
-                        dir="auto"
-                    />
-                    <button
-                        onClick={saveRoute}
-                        disabled={!routeName.trim() || currentStops.length === 0}
-                        className="px-4 py-2 rounded-lg gradient-primary text-white text-xs font-semibold disabled:opacity-40 transition-opacity"
-                    >
-                        {t('saved.save', lang)}
-                    </button>
+                    <input type="text" value={routeName} onChange={(e) => setRouteName(e.target.value)} placeholder={t('saved.namePlaceholder', lang)} className="input flex-1" onKeyDown={(e) => e.key === 'Enter' && saveRoute()} dir="auto" />
+                    <button onClick={saveRoute} disabled={!routeName.trim() || currentStops.length === 0} className="btn-primary px-4 py-2 text-xs">{t('saved.save', lang)}</button>
                 </div>
             </div>
 
-            {/* Routes list */}
-            <div className="max-h-[200px] overflow-y-auto">
+            {/* List */}
+            <div className="max-h-[180px] overflow-y-auto">
                 {routes.length === 0 ? (
                     <p className="text-center text-xs text-surface-400 py-6">{t('saved.empty', lang)}</p>
                 ) : (

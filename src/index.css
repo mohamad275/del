@@ -2,40 +2,38 @@
 
 /* ===== Design Tokens ===== */
 @theme {
-  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Inter', 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
 
-  /* Primary: deep indigo-blue */
-  --color-primary-50: #eef2ff;
-  --color-primary-100: #e0e7ff;
-  --color-primary-200: #c7d2fe;
-  --color-primary-300: #a5b4fc;
-  --color-primary-400: #818cf8;
-  --color-primary-500: #6366f1;
-  --color-primary-600: #4f46e5;
-  --color-primary-700: #4338ca;
-  --color-primary-800: #3730a3;
-  --color-primary-900: #312e81;
+  /* Primary: clean blue */
+  --color-primary-50: #eff6ff;
+  --color-primary-100: #dbeafe;
+  --color-primary-200: #bfdbfe;
+  --color-primary-300: #93c5fd;
+  --color-primary-400: #60a5fa;
+  --color-primary-500: #3b82f6;
+  --color-primary-600: #2563eb;
+  --color-primary-700: #1d4ed8;
+  --color-primary-800: #1e40af;
+  --color-primary-900: #1e3a8a;
 
-  /* Accent: vibrant orange */
-  --color-accent-400: #fb923c;
-  --color-accent-500: #f97316;
-  --color-accent-600: #ea580c;
+  /* Accent: green for CTA */
+  --color-accent-400: #34d399;
+  --color-accent-500: #10b981;
+  --color-accent-600: #059669;
 
-  /* Surface colors for dark mode */
-  --color-surface-50: #f8fafc;
-  --color-surface-100: #f1f5f9;
-  --color-surface-200: #e2e8f0;
-  --color-surface-300: #cbd5e1;
-  --color-surface-400: #94a3b8;
-  --color-surface-500: #64748b;
-  --color-surface-600: #475569;
-  --color-surface-700: #334155;
-  --color-surface-800: #1e293b;
-  --color-surface-850: #172033;
-  --color-surface-900: #0f172a;
-  --color-surface-950: #020617;
+  /* Surface: neutral gray */
+  --color-surface-50: #f9fafb;
+  --color-surface-100: #f3f4f6;
+  --color-surface-200: #e5e7eb;
+  --color-surface-300: #d1d5db;
+  --color-surface-400: #9ca3af;
+  --color-surface-500: #6b7280;
+  --color-surface-600: #4b5563;
+  --color-surface-700: #374151;
+  --color-surface-800: #1f2937;
+  --color-surface-900: #111827;
 
-  /* Success / Error / Warning */
+  /* Semantic */
   --color-success: #10b981;
   --color-error: #ef4444;
   --color-warning: #f59e0b;
@@ -47,134 +45,191 @@ html {
 }
 
 body {
-  font-family: var(--font-sans);
+  font-family: 'IBM Plex Sans Arabic', 'Inter', ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background: #f5f7fa;
+  color: #1f2937;
 }
 
-/* Light mode (default) */
-body {
-  background: linear-gradient(135deg, #f0f4ff 0%, #e8edf5 50%, #f5f3ff 100%);
-  color: #1e293b;
-}
-
-/* Dark mode */
 body.dark {
-  background: linear-gradient(135deg, #0f172a 0%, #1a1f3a 50%, #0f172a 100%);
-  color: #e2e8f0;
+  background: #111827;
+  color: #e5e7eb;
 }
 
 /* ===== Scrollbar ===== */
 ::-webkit-scrollbar {
-  width: 6px;
+  width: 5px;
 }
+
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #94a3b8;
-  border-radius: 3px;
+  background: #d1d5db;
+  border-radius: 4px;
 }
+
 .dark ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #374151;
 }
 
-/* ===== Custom Utilities ===== */
-.glass-card {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.5);
+/* ===== Card Styles ===== */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
-.dark .glass-card {
-  background: rgba(30, 41, 59, 0.75);
-  border: 1px solid rgba(99, 102, 241, 0.15);
+.dark .card {
+  background: #1f2937;
+  border-color: #374151;
+  box-shadow: none;
 }
 
-.gradient-primary {
-  background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+/* ===== Gradient Buttons ===== */
+.btn-primary {
+  background: #3b82f6;
+  color: white;
+  border-radius: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
 }
 
-.gradient-accent {
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+.btn-primary:hover:not(:disabled) {
+  background: #2563eb;
+  box-shadow: 0 4px 14px rgba(59, 130, 246, 0.3);
 }
 
-.shimmer {
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
+.btn-primary:active:not(:disabled) {
+  transform: scale(0.98);
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+.btn-primary:disabled {
+  background: #d1d5db;
+  color: #9ca3af;
+  cursor: not-allowed;
 }
 
-@keyframes fadeInUp {
+.dark .btn-primary:disabled {
+  background: #374151;
+  color: #6b7280;
+}
+
+.btn-success {
+  background: #10b981;
+  color: white;
+  border-radius: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-success:hover {
+  background: #059669;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.3);
+}
+
+/* ===== Input Styles ===== */
+.input {
+  width: 100%;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: #f9fafb;
+  border: 1.5px solid #e5e7eb;
+  color: #1f2937;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #3b82f6;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.dark .input {
+  background: #111827;
+  border-color: #374151;
+  color: #e5e7eb;
+}
+
+.dark .input:focus {
+  border-color: #3b82f6;
+  background: #1f2937;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.dark .input::placeholder {
+  color: #6b7280;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(12px);
+    transform: translateY(8px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.animate-fadeInUp {
-  animation: fadeInUp 0.4s ease-out forwards;
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease-out forwards;
 }
 
-@keyframes pulse-ring {
-  0% { transform: scale(0.8); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.pulse-ring::before {
-  content: '';
-  position: absolute;
-  inset: -4px;
-  border-radius: 50%;
-  border: 2px solid currentColor;
-  animation: pulse-ring 1.5s ease-out infinite;
-}
-
-/* ===== Map Container ===== */
+/* ===== Map ===== */
 .map-container {
-  border-radius: 1rem;
+  border-radius: 16px;
   overflow: hidden;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  border: 1px solid #e5e7eb;
 }
 
 .dark .map-container {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  border-color: #374151;
 }
 
-/* ===== DnD Styles ===== */
-.dragging {
-  box-shadow: 0 8px 32px rgba(99, 102, 241, 0.3);
-  transform: scale(1.02);
-}
-
-/* ===== Input Overrides ===== */
-input::placeholder {
-  color: #94a3b8;
-}
-.dark input::placeholder {
-  color: #475569;
-}
-
-/* ===== Number Badge ===== */
+/* ===== Stop Badge ===== */
 .stop-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border-radius: 50%;
-  font-size: 0.75rem;
+  font-size: 11px;
   font-weight: 700;
   color: white;
   flex-shrink: 0;
+}
+
+/* ===== RTL helpers ===== */
+[dir="ltr"] body {
+  font-family: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ===== Chip / Tag ===== */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
 }

@@ -8,9 +8,9 @@ export type Language = 'ar' | 'en';
 const translations: Record<Language, Record<string, string>> = {
     ar: {
         // App
-        'app.name': 'روت فلو',
-        'app.subtitle': 'محسّن مسار التوصيل',
-        'app.footer': 'روت فلو — محسّن مسار التوصيل · مصمم للسرعة',
+        'app.name': 'مُنظّم التوصيل',
+        'app.subtitle': 'أسرع مسار لتوصيلاتك',
+        'app.footer': 'مُنظّم التوصيل — أسرع مسار لتوصيلاتك',
         'app.loadingMap': 'جاري تحميل الخريطة...',
         'app.setApiKey': 'أدخل مفتاح API في ملف .env',
         'app.mapClickHint': 'اضغط على الخريطة لإضافة نقطة',

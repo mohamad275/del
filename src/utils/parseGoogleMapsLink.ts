@@ -121,15 +121,27 @@ export function isShortGoogleMapsUrl(text: string): boolean {
 
 /**
  * Resolve a shortened Google Maps URL via the dev server proxy.
- * The proxy follows the redirect chain and returns the final expanded URL,
- * which will contain extractable coordinates.
+ * The proxy follows redirects, reads the HTML, and extracts coordinates.
+ * Returns { lat, lng } directly, or null if resolution fails.
  */
-export async function resolveShortUrl(shortUrl: string): Promise<string | null> {
+export async function resolveShortUrl(shortUrl: string): Promise<{ lat: number; lng: number } | null> {
     try {
         const response = await fetch(`/api/resolve-url?url=${encodeURIComponent(shortUrl)}`);
         if (!response.ok) return null;
         const data = await response.json();
-        return data.url || null;
+
+        // The proxy extracts lat/lng from the HTML and URL
+        if (data.lat && data.lng) {
+            return { lat: data.lat, lng: data.lng };
+        }
+
+        // Fallback: try to parse coordinates from the expanded URL
+        if (data.url) {
+            const coords = parseGoogleMapsLink(data.url);
+            if (coords) return coords;
+        }
+
+        return null;
     } catch {
         return null;
     }
