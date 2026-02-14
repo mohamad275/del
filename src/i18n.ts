@@ -23,7 +23,7 @@ const translations: Record<Language, Record<string, string>> = {
         // Location Input
         'location.start': 'نقطة البداية',
         'location.end': 'نقطة النهاية',
-        'location.endHint': '',
+        
         'location.optional': '(اختياري)',
         'location.placeholder': 'أدخل عنوان أو الصق رابط Google Maps...',
         'location.gps': 'موقعي',
@@ -84,7 +84,7 @@ const translations: Record<Language, Record<string, string>> = {
         // Location Input
         'location.start': 'Start Location',
         'location.end': 'End Location',
-        'location.endHint': '',
+       
         'location.optional': '(Optional)',
         'location.placeholder': 'Enter address or paste Google Maps link...',
         'location.gps': 'GPS',
