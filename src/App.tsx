@@ -133,7 +133,17 @@ export default function App() {
                     {/* Map — below controls */}
                     <div className="flex-1 min-h-[400px]">
                         {mapsLoaded ? (
+<<<<<<< HEAD
                             <MapView lang={lang} startLocation={startLocation} endLocation={endLocation} stops={stops} optimizedRoute={optimizedRoute} onMapClick={handleMapClick} />
+=======
+                            <MapView
+                                startLocation={startLocation}
+                                endLocation={endLocation}
+                                stops={stops}
+                                optimizedRoute={optimizedRoute}
+                                onMapClick={handleMapClick}
+                            />
+>>>>>>> c93cec675a9c3daf11a6679a3458711a696103d9
                         ) : (
                             <div className="w-full h-full min-h-[400px] rounded-2xl card flex items-center justify-center">
                                 <div className="text-center">
