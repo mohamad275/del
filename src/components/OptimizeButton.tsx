@@ -1,15 +1,14 @@
+import { t, type Language } from '../i18n';
+
 interface OptimizeButtonProps {
+    lang: Language;
     onClick: () => void;
     isOptimizing: boolean;
     disabled: boolean;
     stopCount: number;
 }
 
-/**
- * Large call-to-action button to trigger route optimization.
- * Shows loading spinner during optimization.
- */
-export default function OptimizeButton({ onClick, isOptimizing, disabled, stopCount }: OptimizeButtonProps) {
+export default function OptimizeButton({ lang, onClick, isOptimizing, disabled, stopCount }: OptimizeButtonProps) {
     return (
         <button
             onClick={onClick}
@@ -24,14 +23,15 @@ export default function OptimizeButton({ onClick, isOptimizing, disabled, stopCo
             {isOptimizing ? (
                 <>
                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                    Optimizing {stopCount} stops...
+                    {t('optimize.optimizing', lang)} {stopCount} {t('optimize.stops', lang)}...
                 </>
             ) : (
                 <>
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
-                    </svg>
-                    {disabled ? 'Add stops to optimize' : `Optimize Route (${stopCount} stops)`}
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" /></svg>
+                    {disabled
+                        ? t('optimize.addStops', lang)
+                        : `${t('optimize.button', lang)} (${stopCount} ${t('optimize.stops', lang)})`
+                    }
                 </>
             )}
         </button>
