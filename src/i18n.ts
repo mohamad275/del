@@ -35,6 +35,7 @@ const translations: Record<Language, Record<string, string>> = {
         'stops.clearAll': 'مسح الكل',
         'stops.addPlaceholder': 'عنوان، اسم مبنى، أو رابط خرائط...',
         'stops.emptyMessage': 'أضف نقاط التوصيل أعلاه للبدء.\nيمكنك سحب النقاط لإعادة ترتيبها.',
+        'stops.orderNumber': 'رقم الطلب',
 
         // Optimize
         'optimize.button': 'تحسين المسار',
@@ -65,6 +66,22 @@ const translations: Record<Language, Record<string, string>> = {
         'error.noDirections': 'تعذر حساب الاتجاهات',
         'error.distanceMatrix': 'فشل حساب المسافات',
         'error.optimizationFailed': 'فشل التحسين',
+
+        // Navigation
+        'nav.startNavigation': 'ابدأ الملاحة',
+        'nav.openGoogleMaps': 'افتح خرائط جوجل',
+        'nav.delivered': 'تم التوصيل ✓',
+        'nav.skip': 'تخطي',
+        'nav.exit': 'خروج',
+        'nav.eta': 'الوقت المتوقع',
+        'nav.distance': 'المسافة',
+        'nav.stopOf': 'النقطة {n} من {total}',
+        'nav.completed': '{n} من {total} تم التوصيل',
+        'nav.offRoute': 'أنت خارج المسار!',
+        'nav.allDone': 'تم توصيل جميع الطلبات! 🎉',
+        'nav.deliveredCount': 'تم توصيل {n} طلبات بنجاح',
+        'nav.backToPlanner': 'العودة للمخطط',
+        'nav.waitingGPS': 'جاري تحديد موقعك...',
     },
 
     en: {
@@ -96,6 +113,7 @@ const translations: Record<Language, Record<string, string>> = {
         'stops.clearAll': 'Clear all',
         'stops.addPlaceholder': 'Address, building name, or Maps link...',
         'stops.emptyMessage': 'Add delivery stops above to get started.\nYou can drag to reorder them.',
+        'stops.orderNumber': 'Order #',
 
         // Optimize
         'optimize.button': 'Optimize Route',
@@ -126,6 +144,22 @@ const translations: Record<Language, Record<string, string>> = {
         'error.noDirections': 'Could not compute directions',
         'error.distanceMatrix': 'Distance Matrix failed',
         'error.optimizationFailed': 'Optimization failed',
+
+        // Navigation
+        'nav.startNavigation': 'Start Navigation',
+        'nav.openGoogleMaps': 'Open Google Maps',
+        'nav.delivered': 'Delivered ✓',
+        'nav.skip': 'Skip',
+        'nav.exit': 'Exit',
+        'nav.eta': 'ETA',
+        'nav.distance': 'Distance',
+        'nav.stopOf': 'Stop {n} of {total}',
+        'nav.completed': '{n} of {total} delivered',
+        'nav.offRoute': 'You are off route!',
+        'nav.allDone': 'All deliveries completed! 🎉',
+        'nav.deliveredCount': '{n} deliveries completed successfully',
+        'nav.backToPlanner': 'Back to Planner',
+        'nav.waitingGPS': 'Detecting your location...',
     },
 };
 

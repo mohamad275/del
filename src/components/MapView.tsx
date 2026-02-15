@@ -76,12 +76,24 @@ export default function MapView({ lang, startLocation, endLocation, stops, optim
             if (isStart) color = '#10b981';
             else if (isEnd) color = '#f97316';
 
+            const sequenceLabel = isStart ? 'S' : isEnd ? 'E' : String(index);
+            const orderNum = stop.orderNumber ? `#${stop.orderNumber}` : '';
+
+            const svgIcon = createMarkerSVG(sequenceLabel, orderNum, color);
+
             const marker = new google.maps.Marker({
                 position: stop.location,
                 map,
-                label: { text: isStart ? 'S' : isEnd ? 'E' : String(index), color: 'white', fontWeight: 'bold', fontSize: '12px' },
-                icon: { path: google.maps.SymbolPath.CIRCLE, fillColor: color, fillOpacity: 1, strokeColor: 'white', strokeWeight: 2.5, scale: 15 },
-                title: stop.address,
+                icon: {
+                    url: 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svgIcon),
+                    scaledSize: orderNum
+                        ? new google.maps.Size(56, 68)
+                        : new google.maps.Size(36, 44),
+                    anchor: orderNum
+                        ? new google.maps.Point(28, 68)
+                        : new google.maps.Point(18, 44),
+                },
+                title: stop.orderNumber ? `#${stop.orderNumber} — ${stop.address}` : stop.address,
                 zIndex: isStart ? 100 : 50,
             });
 
@@ -138,6 +150,43 @@ export default function MapView({ lang, startLocation, endLocation, stops, optim
             </div>
         </div>
     );
+}
+
+/**
+ * Generate an SVG marker icon as a string.
+ * Shows a pin with the sequence number, and optionally an order number tag below.
+ */
+function createMarkerSVG(sequence: string, orderNumber: string, color: string): string {
+    if (orderNumber) {
+        // Pin with order number tag — taller SVG
+        return `<svg xmlns="http://www.w3.org/2000/svg" width="56" height="68" viewBox="0 0 56 68">
+  <defs>
+    <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="2" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <!-- Pin body -->
+  <path d="M28 42 L22 32 A14 14 0 1 1 34 32 Z" fill="${color}" stroke="white" stroke-width="2" filter="url(#s)"/>
+  <!-- Sequence circle -->
+  <circle cx="28" cy="18" r="12" fill="${color}" stroke="white" stroke-width="2"/>
+  <text x="28" y="23" text-anchor="middle" fill="white" font-family="Arial,sans-serif" font-weight="bold" font-size="13">${sequence}</text>
+  <!-- Order number tag -->
+  <rect x="4" y="46" width="48" height="18" rx="9" fill="white" stroke="${color}" stroke-width="1.5" filter="url(#s)"/>
+  <text x="28" y="59" text-anchor="middle" fill="${color}" font-family="Arial,sans-serif" font-weight="bold" font-size="10">${orderNumber}</text>
+</svg>`;
+    }
+
+    // Simple pin without order number
+    return `<svg xmlns="http://www.w3.org/2000/svg" width="36" height="44" viewBox="0 0 36 44">
+  <defs>
+    <filter id="s" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1" stdDeviation="1.5" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+  <path d="M18 38 L12 28 A12 12 0 1 1 24 28 Z" fill="${color}" stroke="white" stroke-width="2" filter="url(#s)"/>
+  <circle cx="18" cy="16" r="10" fill="${color}" stroke="white" stroke-width="2"/>
+  <text x="18" y="20.5" text-anchor="middle" fill="white" font-family="Arial,sans-serif" font-weight="bold" font-size="12">${sequence}</text>
+</svg>`;
 }
 
 function getMapStyles(): google.maps.MapTypeStyle[] {

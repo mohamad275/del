@@ -123,6 +123,18 @@ export default function StopList({ lang, stops, onStopsChange }: StopListProps) 
                                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5" /><circle cx="15" cy="6" r="1.5" /><circle cx="9" cy="12" r="1.5" /><circle cx="15" cy="12" r="1.5" /><circle cx="9" cy="18" r="1.5" /><circle cx="15" cy="18" r="1.5" /></svg>
                                             </div>
                                             <div className="stop-badge bg-primary-500">{index + 1}</div>
+                                            <input
+                                                type="text"
+                                                value={stop.orderNumber || ''}
+                                                onChange={(e) => {
+                                                    const updated = [...stops];
+                                                    updated[index] = { ...updated[index], orderNumber: e.target.value };
+                                                    onStopsChange(updated);
+                                                }}
+                                                placeholder={t('stops.orderNumber', lang)}
+                                                className="w-[72px] flex-shrink-0 px-2 py-1 text-xs rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 placeholder-surface-400 focus:border-primary-400 focus:ring-1 focus:ring-primary-200 outline-none transition-colors"
+                                                dir="auto"
+                                            />
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-sm text-surface-800 dark:text-surface-200 truncate">{stop.address}</p>
                                                 {!stop.location && <p className="text-xs text-warning mt-0.5">⚠ {t('location.notFound', lang)}</p>}

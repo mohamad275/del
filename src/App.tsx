@@ -3,6 +3,8 @@ import type { DeliveryStop } from './types';
 import { generateId } from './utils/formatTime';
 import { useRouteOptimizer } from './hooks/useRouteOptimizer';
 import { useGeocode } from './hooks/useGeocode';
+import { useGPSTracking } from './hooks/useGPSTracking';
+import { useNavigation } from './hooks/useNavigation';
 import { getSavedLanguage, saveLanguage, isRTL, t, type Language } from './i18n';
 import Header from './components/Header';
 import LocationInput from './components/LocationInput';
@@ -11,6 +13,7 @@ import MapView from './components/MapView';
 import RouteSummary from './components/RouteSummary';
 import OptimizeButton from './components/OptimizeButton';
 import SavedRoutes from './components/SavedRoutes';
+import NavigationView from './components/NavigationView';
 
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
 
@@ -25,6 +28,10 @@ export default function App() {
 
     const { optimizedRoute, isOptimizing, error, optimizeRoute, clearRoute } = useRouteOptimizer();
     const { reverseGeocode } = useGeocode();
+
+    // Navigation hooks
+    const gps = useGPSTracking();
+    const nav = useNavigation(optimizedRoute, gps.position, mapsLoaded, lang);
 
     const toggleLanguage = useCallback(() => {
         const newLang = lang === 'ar' ? 'en' : 'ar';
@@ -62,7 +69,8 @@ export default function App() {
         optimizeRoute(startLocation, stops, endLocation.location ? endLocation : null);
     }, [startLocation, stops, endLocation, optimizeRoute]);
 
-    const handleNavigate = useCallback(() => {
+    // Open Google Maps external fallback
+    const handleNavigateExternal = useCallback(() => {
         const routeStops = optimizedRoute?.orderedStops || [startLocation, ...stops, ...(endLocation.location ? [endLocation] : [])];
         const validStops = routeStops.filter((s) => s.location);
         if (validStops.length < 2) return;
@@ -70,6 +78,18 @@ export default function App() {
         validStops.forEach((s) => { url += `/${s.location!.lat},${s.location!.lng}`; });
         window.open(url, '_blank');
     }, [optimizedRoute, startLocation, stops, endLocation]);
+
+    // Start in-app navigation
+    const handleStartNavigation = useCallback(() => {
+        gps.start();
+        nav.startNavigation();
+    }, [gps, nav]);
+
+    // Exit navigation
+    const handleExitNavigation = useCallback(() => {
+        nav.exitNavigation();
+        gps.stop();
+    }, [nav, gps]);
 
     const handleLoadRoute = useCallback((start: DeliveryStop, end: DeliveryStop | null, savedStops: DeliveryStop[]) => {
         setStartLocation(start);
@@ -83,6 +103,25 @@ export default function App() {
 
     const canOptimize = startLocation.location && stops.filter((s) => s.location).length >= 1;
 
+    // ===== NAVIGATION MODE =====
+    if (nav.navState.isActive && optimizedRoute) {
+        return (
+            <NavigationView
+                lang={lang}
+                optimizedRoute={optimizedRoute}
+                gpsPosition={gps.position}
+                navState={nav.navState}
+                voiceEnabled={nav.voiceEnabled}
+                directionsResult={nav.directionsResult}
+                onDelivered={nav.markDelivered}
+                onSkip={nav.skipStop}
+                onExit={handleExitNavigation}
+                onToggleVoice={nav.toggleVoice}
+            />
+        );
+    }
+
+    // ===== PLANNER MODE =====
     return (
         <div className="min-h-screen flex flex-col">
             <Header lang={lang} onToggleLanguage={toggleLanguage} onSavedRoutesToggle={() => setShowSavedRoutes(!showSavedRoutes)} showSavedRoutes={showSavedRoutes} />
@@ -127,7 +166,7 @@ export default function App() {
                         )}
 
                         {/* Route Summary */}
-                        {optimizedRoute && <RouteSummary lang={lang} route={optimizedRoute} onNavigate={handleNavigate} />}
+                        {optimizedRoute && <RouteSummary lang={lang} route={optimizedRoute} onNavigate={handleNavigateExternal} onStartNavigation={handleStartNavigation} />}
                     </div>
 
                     {/* Map — below controls */}

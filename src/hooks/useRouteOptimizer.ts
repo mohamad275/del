@@ -129,24 +129,23 @@ export function useRouteOptimizer() {
 
 /**
  * Build an NxN distance matrix using Google Distance Matrix API.
+ * Always batches to stay within the 100-element-per-request limit.
  */
 async function getDistanceMatrix(points: DeliveryStop[]): Promise<number[][]> {
-    return new Promise((resolve, reject) => {
-        if (!window.google?.maps) {
-            reject(new Error('Google Maps not loaded'));
-            return;
-        }
+    if (!window.google?.maps) {
+        throw new Error('Google Maps not loaded');
+    }
 
-        const service = new google.maps.DistanceMatrixService();
-        const locations = points.map(
-            (p) => new google.maps.LatLng(p.location!.lat, p.location!.lng)
-        );
+    const service = new google.maps.DistanceMatrixService();
+    const locations = points.map(
+        (p) => new google.maps.LatLng(p.location!.lat, p.location!.lng)
+    );
 
-        // Distance Matrix API has limits: max 25 origins × 25 destinations per request
-        // For larger sets, we'd need to batch. For now, support up to 25.
-        const batchSize = 25;
+    const n = locations.length;
 
-        if (locations.length <= batchSize) {
+    // For very small sets (≤10), a single request is fine (≤100 elements)
+    if (n <= 10) {
+        return new Promise((resolve, reject) => {
             service.getDistanceMatrix(
                 {
                     origins: locations,
@@ -167,13 +166,11 @@ async function getDistanceMatrix(points: DeliveryStop[]): Promise<number[][]> {
                     }
                 }
             );
-        } else {
-            // For >25 points, build matrix in batches
-            buildLargeDistanceMatrix(locations, service)
-                .then(resolve)
-                .catch(reject);
-        }
-    });
+        });
+    }
+
+    // For larger sets, batch to stay under 100 elements per request
+    return buildLargeDistanceMatrix(locations, service);
 }
 
 /**
@@ -185,7 +182,8 @@ async function buildLargeDistanceMatrix(
 ): Promise<number[][]> {
     const n = locations.length;
     const matrix: number[][] = Array.from({ length: n }, () => Array(n).fill(Infinity));
-    const batchSize = 25;
+    // Keep each request under 100 elements: batchSize × n ≤ 100
+    const batchSize = Math.max(1, Math.min(10, Math.floor(100 / n)));
 
     for (let i = 0; i < n; i += batchSize) {
         const origins = locations.slice(i, Math.min(i + batchSize, n));
