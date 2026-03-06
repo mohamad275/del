@@ -223,7 +223,7 @@ export default function RouteSummary({ lang, route, onNavigate, onStartNavigatio
                             const stop = route.orderedStops[i + 1];
                             const stopRow = (
                                 <div
-                                    key={i}
+                                    key={stop?.id || i}
                                     className="flex items-center gap-3 px-4 py-2.5 bg-white dark:bg-surface-900 cursor-pointer hover:bg-surface-50 dark:hover:bg-surface-800/50 transition-colors"
                                     onClick={() => stop?.location && openGoogleMaps(stop.location.lat, stop.location.lng)}
                                 >
@@ -237,6 +237,9 @@ export default function RouteSummary({ lang, route, onNavigate, onStartNavigatio
                                             ) : stop?.orderNumber ? (
                                                 <span className="inline-block mr-1.5 px-1.5 py-0.5 text-[10px] font-bold rounded bg-primary-500/15 text-primary-600 dark:text-primary-400">#{stop.orderNumber}</span>
                                             ) : null}
+                                            {stop?.houseNumber && (
+                                                <span className="inline-block mr-1.5 px-1.5 py-0.5 text-[10px] font-bold rounded bg-amber-500/15 text-amber-600 dark:text-amber-400">🏠{stop.houseNumber}</span>
+                                            )}
                                             {leg.address}
                                         </p>
                                         <p className="text-xs text-surface-400">{leg.distance} · {leg.duration}</p>
@@ -250,7 +253,7 @@ export default function RouteSummary({ lang, route, onNavigate, onStartNavigatio
 
                             if (onRemoveStop) {
                                 return (
-                                    <SwipeableStopRow key={i} onDelete={() => onRemoveStop(i + 1)}>
+                                    <SwipeableStopRow key={stop?.id || i} onDelete={() => onRemoveStop(i + 1)}>
                                         {stopRow}
                                     </SwipeableStopRow>
                                 );

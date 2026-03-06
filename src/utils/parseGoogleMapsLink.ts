@@ -29,11 +29,18 @@ export function parseGoogleMapsLink(url: string): { lat: number; lng: number } |
             return { lat: parseFloat(pathMatch[1]), lng: parseFloat(pathMatch[2]) };
         }
 
-        // Pattern 4: data= with lat/lng encoded
+        // Pattern 4: data= with lat/lng encoded (!3d{lat}!4d{lng})
         const dataPattern = /!3d(-?\d+\.?\d*)!4d(-?\d+\.?\d*)/;
         const dataMatch = url.match(dataPattern);
         if (dataMatch) {
             return { lat: parseFloat(dataMatch[1]), lng: parseFloat(dataMatch[2]) };
+        }
+
+        // Pattern 5: protocol buffer encoding (!2d{lng}!3d{lat})
+        const pbPattern = /!2d(-?\d+\.\d+)!3d(-?\d+\.\d+)/;
+        const pbMatch = url.match(pbPattern);
+        if (pbMatch) {
+            return { lat: parseFloat(pbMatch[2]), lng: parseFloat(pbMatch[1]) };
         }
 
         return null;
@@ -126,23 +133,36 @@ export function isShortGoogleMapsUrl(text: string): boolean {
  */
 export async function resolveShortUrl(shortUrl: string): Promise<{ lat: number; lng: number } | null> {
     try {
+        console.log('[resolveShortUrl] Calling proxy for:', shortUrl);
         const response = await fetch(`/api/resolve-url?url=${encodeURIComponent(shortUrl)}`);
-        if (!response.ok) return null;
+        console.log('[resolveShortUrl] Proxy response status:', response.status);
+        if (!response.ok) {
+            console.log('[resolveShortUrl] Proxy returned non-OK status');
+            return null;
+        }
         const data = await response.json();
+        console.log('[resolveShortUrl] Proxy data:', JSON.stringify(data));
 
         // The proxy extracts lat/lng from the HTML and URL
         if (data.lat && data.lng) {
+            console.log('[resolveShortUrl] Found coords from proxy:', data.lat, data.lng);
             return { lat: data.lat, lng: data.lng };
         }
 
         // Fallback: try to parse coordinates from the expanded URL
         if (data.url) {
+            console.log('[resolveShortUrl] Trying to parse expanded URL:', data.url.substring(0, 200));
             const coords = parseGoogleMapsLink(data.url);
-            if (coords) return coords;
+            if (coords) {
+                console.log('[resolveShortUrl] Parsed coords from URL:', coords.lat, coords.lng);
+                return coords;
+            }
         }
 
+        console.log('[resolveShortUrl] No coordinates found');
         return null;
-    } catch {
+    } catch (err) {
+        console.error('[resolveShortUrl] Error:', err);
         return null;
     }
 }

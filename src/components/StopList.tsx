@@ -92,7 +92,7 @@ export default function StopList({ lang, stops, onStopsChange }: StopListProps) 
                         onChange={(e) => setNewStopText(e.target.value)}
                         onKeyDown={(e) => e.key === 'Enter' && addStop()}
                         placeholder={t('stops.addPlaceholder', lang)}
-                        className="input"
+                        className="input min-h-[48px] text-base"
                         dir="auto"
                     />
                     {isAdding && (
@@ -101,8 +101,8 @@ export default function StopList({ lang, stops, onStopsChange }: StopListProps) 
                         </div>
                     )}
                 </div>
-                <button onClick={addStop} disabled={!newStopText.trim() || isAdding} className="btn-primary px-4 py-3 flex items-center justify-center">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
+                <button onClick={addStop} disabled={!newStopText.trim() || isAdding} className="btn-primary min-w-[48px] min-h-[48px] px-4 flex items-center justify-center">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 </button>
             </div>
 
@@ -117,44 +117,62 @@ export default function StopList({ lang, stops, onStopsChange }: StopListProps) 
                                         <div
                                             ref={provided.innerRef}
                                             {...provided.draggableProps}
-                                            className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 transition-all ${snapshot.isDragging ? 'shadow-lg scale-[1.02] border-primary-300' : ''}`}
+                                            className={`px-3 py-3 rounded-xl bg-surface-50 dark:bg-surface-800 border border-surface-200 dark:border-surface-700 transition-all ${snapshot.isDragging ? 'shadow-lg scale-[1.02] border-primary-300' : ''}`}
                                         >
-                                            <div {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing text-surface-300 dark:text-surface-600 flex-shrink-0">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5" /><circle cx="15" cy="6" r="1.5" /><circle cx="9" cy="12" r="1.5" /><circle cx="15" cy="12" r="1.5" /><circle cx="9" cy="18" r="1.5" /><circle cx="15" cy="18" r="1.5" /></svg>
+                                            {/* Top row: drag handle, badge, address, check, delete */}
+                                            <div className="flex items-center gap-2.5 mb-2">
+                                                <div {...provided.dragHandleProps} className="cursor-grab active:cursor-grabbing text-surface-300 dark:text-surface-600 flex-shrink-0">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="6" r="1.5" /><circle cx="15" cy="6" r="1.5" /><circle cx="9" cy="12" r="1.5" /><circle cx="15" cy="12" r="1.5" /><circle cx="9" cy="18" r="1.5" /><circle cx="15" cy="18" r="1.5" /></svg>
+                                                </div>
+                                                <div className="stop-badge bg-primary-500">{index + 1}</div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-sm font-medium text-surface-800 dark:text-surface-200 truncate">{stop.address}</p>
+                                                    {!stop.location && <p className="text-xs text-warning mt-0.5">⚠ {t('location.notFound', lang)}</p>}
+                                                </div>
+                                                {stop.location && <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" className="flex-shrink-0"><polyline points="20 6 9 17 4 12" /></svg>}
+                                                <button onClick={() => removeStop(index)} className="w-9 h-9 rounded-lg flex items-center justify-center text-surface-300 hover:text-error hover:bg-error/10 transition-all flex-shrink-0">
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                                                </button>
                                             </div>
-                                            <div className="stop-badge bg-primary-500">{index + 1}</div>
-                                            <input
-                                                type="text"
-                                                value={stop.orderNumber || ''}
-                                                onChange={(e) => {
-                                                    const updated = [...stops];
-                                                    updated[index] = { ...updated[index], orderNumber: e.target.value };
-                                                    onStopsChange(updated);
-                                                }}
-                                                placeholder={t('stops.orderNumber', lang)}
-                                                className="w-[72px] flex-shrink-0 px-2 py-1 text-xs rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 placeholder-surface-400 focus:border-primary-400 focus:ring-1 focus:ring-primary-200 outline-none transition-colors"
-                                                dir="auto"
-                                            />
-                                            <input
-                                                type="tel"
-                                                value={stop.phone || ''}
-                                                onChange={(e) => {
-                                                    const updated = [...stops];
-                                                    updated[index] = { ...updated[index], phone: e.target.value };
-                                                    onStopsChange(updated);
-                                                }}
-                                                placeholder={t('stops.phone', lang)}
-                                                className="w-[80px] flex-shrink-0 px-2 py-1 text-xs rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 placeholder-surface-400 focus:border-green-400 focus:ring-1 focus:ring-green-200 outline-none transition-colors"
-                                                dir="ltr"
-                                            />
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm text-surface-800 dark:text-surface-200 truncate">{stop.address}</p>
-                                                {!stop.location && <p className="text-xs text-warning mt-0.5">⚠ {t('location.notFound', lang)}</p>}
+                                            {/* Bottom row: order number, house number, phone */}
+                                            <div className="flex gap-2 mr-[26px]">
+                                                <input
+                                                    type="text"
+                                                    value={stop.orderNumber || ''}
+                                                    onChange={(e) => {
+                                                        const updated = [...stops];
+                                                        updated[index] = { ...updated[index], orderNumber: e.target.value };
+                                                        onStopsChange(updated);
+                                                    }}
+                                                    placeholder={t('stops.orderNumber', lang)}
+                                                    className="flex-1 min-w-0 min-h-[40px] px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 placeholder-surface-400 focus:border-primary-400 focus:ring-1 focus:ring-primary-200 outline-none transition-colors"
+                                                    dir="auto"
+                                                />
+                                                <input
+                                                    type="text"
+                                                    value={stop.houseNumber || ''}
+                                                    onChange={(e) => {
+                                                        const updated = [...stops];
+                                                        updated[index] = { ...updated[index], houseNumber: e.target.value };
+                                                        onStopsChange(updated);
+                                                    }}
+                                                    placeholder={t('stops.houseNumber', lang)}
+                                                    className="flex-1 min-w-0 min-h-[40px] px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 placeholder-surface-400 focus:border-amber-400 focus:ring-1 focus:ring-amber-200 outline-none transition-colors"
+                                                    dir="auto"
+                                                />
+                                                <input
+                                                    type="tel"
+                                                    value={stop.phone || ''}
+                                                    onChange={(e) => {
+                                                        const updated = [...stops];
+                                                        updated[index] = { ...updated[index], phone: e.target.value };
+                                                        onStopsChange(updated);
+                                                    }}
+                                                    placeholder={t('stops.phone', lang)}
+                                                    className="flex-1 min-w-0 min-h-[40px] px-3 py-2 text-sm rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 placeholder-surface-400 focus:border-green-400 focus:ring-1 focus:ring-green-200 outline-none transition-colors"
+                                                    dir="ltr"
+                                                />
                                             </div>
-                                            {stop.location && <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2.5" className="flex-shrink-0"><polyline points="20 6 9 17 4 12" /></svg>}
-                                            <button onClick={() => removeStop(index)} className="w-7 h-7 rounded-lg flex items-center justify-center text-surface-300 hover:text-error hover:bg-error/10 transition-all flex-shrink-0">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-                                            </button>
                                         </div>
                                     )}
                                 </Draggable>

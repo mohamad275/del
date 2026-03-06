@@ -55,6 +55,11 @@ export default function NextStopCard({
                                 #{stop.orderNumber}
                             </span>
                         )}
+                        {stop.houseNumber && (
+                            <span className="inline-block px-2 py-0.5 text-xs font-bold rounded-full bg-amber-500 text-white">
+                                🏠{stop.houseNumber}
+                            </span>
+                        )}
                         {stop.phone && (() => {
                             const cleaned = stop.phone.replace(/[^0-9]/g, '');
                             return cleaned ? (

@@ -13,8 +13,13 @@ function resolveUrlPlugin(): Plugin {
         name: 'resolve-short-url',
         configureServer(server) {
             server.middlewares.use('/api/resolve-url', async (req: any, res: any) => {
-                const parsedUrl = new URL(req.url!, `http://${req.headers.host}`);
+                // Vite strips the prefix, so req.url might be just "?url=..." or "/?url=..."
+                const rawUrl = req.url || '';
+                const fullUrl = rawUrl.startsWith('http') ? rawUrl : `http://localhost${rawUrl.startsWith('/') ? rawUrl : '/' + rawUrl}`;
+                const parsedUrl = new URL(fullUrl);
                 const targetUrl = parsedUrl.searchParams.get('url');
+
+                console.log('[resolve-url] req.url:', rawUrl, '=> targetUrl:', targetUrl?.substring(0, 80));
 
                 if (!targetUrl) {
                     res.writeHead(400, { 'Content-Type': 'application/json' });
@@ -23,8 +28,10 @@ function resolveUrlPlugin(): Plugin {
                 }
 
                 try {
+                    console.log('[resolve-url] Resolving:', targetUrl);
                     // Follow redirects manually using Node's https module
                     const { finalUrl, body } = await followRedirects(targetUrl, 10);
+                    console.log('[resolve-url] Final URL:', finalUrl.substring(0, 200));
 
                     let lat: number | null = null;
                     let lng: number | null = null;
@@ -34,6 +41,7 @@ function resolveUrlPlugin(): Plugin {
                     if (urlCoords) {
                         lat = urlCoords.lat;
                         lng = urlCoords.lng;
+                        console.log('[resolve-url] Found coords from URL:', lat, lng);
                     }
 
                     // Try parsing HTML body for coordinates
@@ -42,9 +50,11 @@ function resolveUrlPlugin(): Plugin {
                         if (htmlCoords) {
                             lat = htmlCoords.lat;
                             lng = htmlCoords.lng;
+                            console.log('[resolve-url] Found coords from HTML:', lat, lng);
                         }
                     }
 
+                    console.log('[resolve-url] Result:', { lat, lng });
                     res.writeHead(200, { 'Content-Type': 'application/json' });
                     res.end(JSON.stringify({ url: finalUrl, lat, lng }));
                 } catch (err) {
@@ -66,13 +76,13 @@ function followRedirects(url: string, maxRedirects: number): Promise<{ finalUrl:
         const doRequest = (currentUrl: string, redirectsLeft: number) => {
             const client = currentUrl.startsWith('https') ? https : http;
 
-            const request = client.get(currentUrl, {
+            const request = https.get(currentUrl, {
                 headers: {
                     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
                     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
                     'Accept-Language': 'en-US,en;q=0.9,ar;q=0.8',
                 },
-            }, (response) => {
+            }, (response: http.IncomingMessage) => {
                 const statusCode = response.statusCode || 0;
                 const location = response.headers.location;
 
