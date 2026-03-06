@@ -36,6 +36,7 @@ const translations: Record<Language, Record<string, string>> = {
         'stops.addPlaceholder': 'عنوان، اسم مبنى، أو رابط خرائط...',
         'stops.emptyMessage': 'أضف نقاط التوصيل أعلاه للبدء.\nيمكنك سحب النقاط لإعادة ترتيبها.',
         'stops.orderNumber': 'رقم الطلب',
+        'stops.phone': 'رقم الهاتف',
 
         // Optimize
         'optimize.button': 'تحسين المسار',
@@ -114,6 +115,7 @@ const translations: Record<Language, Record<string, string>> = {
         'stops.addPlaceholder': 'Address, building name, or Maps link...',
         'stops.emptyMessage': 'Add delivery stops above to get started.\nYou can drag to reorder them.',
         'stops.orderNumber': 'Order #',
+        'stops.phone': 'Phone',
 
         // Optimize
         'optimize.button': 'Optimize Route',

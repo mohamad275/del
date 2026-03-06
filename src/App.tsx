@@ -26,7 +26,7 @@ export default function App() {
     const [endLocation, setEndLocation] = useState<DeliveryStop>({ id: 'end', address: '', location: null });
     const [stops, setStops] = useState<DeliveryStop[]>([]);
 
-    const { optimizedRoute, isOptimizing, error, optimizeRoute, clearRoute } = useRouteOptimizer();
+    const { optimizedRoute, isOptimizing, error, optimizeRoute, clearRoute, removeStop } = useRouteOptimizer();
     const { reverseGeocode } = useGeocode();
 
     // Navigation hooks
@@ -166,7 +166,7 @@ export default function App() {
                         )}
 
                         {/* Route Summary */}
-                        {optimizedRoute && <RouteSummary lang={lang} route={optimizedRoute} onNavigate={handleNavigateExternal} onStartNavigation={handleStartNavigation} />}
+                        {optimizedRoute && <RouteSummary lang={lang} route={optimizedRoute} onNavigate={handleNavigateExternal} onStartNavigation={handleStartNavigation} onRemoveStop={removeStop} />}
                     </div>
 
                     {/* Map — below controls */}

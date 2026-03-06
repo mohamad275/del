@@ -135,6 +135,18 @@ export default function StopList({ lang, stops, onStopsChange }: StopListProps) 
                                                 className="w-[72px] flex-shrink-0 px-2 py-1 text-xs rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 placeholder-surface-400 focus:border-primary-400 focus:ring-1 focus:ring-primary-200 outline-none transition-colors"
                                                 dir="auto"
                                             />
+                                            <input
+                                                type="tel"
+                                                value={stop.phone || ''}
+                                                onChange={(e) => {
+                                                    const updated = [...stops];
+                                                    updated[index] = { ...updated[index], phone: e.target.value };
+                                                    onStopsChange(updated);
+                                                }}
+                                                placeholder={t('stops.phone', lang)}
+                                                className="w-[80px] flex-shrink-0 px-2 py-1 text-xs rounded-lg border border-surface-200 dark:border-surface-600 bg-white dark:bg-surface-700 text-surface-700 dark:text-surface-200 placeholder-surface-400 focus:border-green-400 focus:ring-1 focus:ring-green-200 outline-none transition-colors"
+                                                dir="ltr"
+                                            />
                                             <div className="flex-1 min-w-0">
                                                 <p className="text-sm text-surface-800 dark:text-surface-200 truncate">{stop.address}</p>
                                                 {!stop.location && <p className="text-xs text-warning mt-0.5">⚠ {t('location.notFound', lang)}</p>}

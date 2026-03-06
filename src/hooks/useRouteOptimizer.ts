@@ -124,7 +124,25 @@ export function useRouteOptimizer() {
         setError(null);
     }, []);
 
-    return { optimizedRoute, isOptimizing, error, optimizeRoute, clearRoute };
+    const removeStop = useCallback((stopIndex: number) => {
+        setOptimizedRoute((prev) => {
+            if (!prev) return null;
+            const newStops = prev.orderedStops.filter((_, i) => i !== stopIndex);
+            const newLegs = prev.legs.filter((_, i) => {
+                // legs[i] corresponds to the leg FROM orderedStops[i] TO orderedStops[i+1]
+                // When removing a stop at stopIndex, we remove the leg leading to it (index stopIndex-1)
+                return i !== stopIndex - 1;
+            });
+            if (newStops.length <= 1) return null; // No meaningful route left
+            return {
+                ...prev,
+                orderedStops: newStops,
+                legs: newLegs,
+            };
+        });
+    }, []);
+
+    return { optimizedRoute, isOptimizing, error, optimizeRoute, clearRoute, removeStop };
 }
 
 /**

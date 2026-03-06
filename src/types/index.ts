@@ -11,6 +11,7 @@ export interface DeliveryStop {
     location: LatLng | null;
     label?: string;
     orderNumber?: string;   // e.g. "1023"
+    phone?: string;         // e.g. "971501234567" for WhatsApp
 }
 
 export interface RouteLeg {
